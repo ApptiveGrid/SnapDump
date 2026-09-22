@@ -50,7 +50,7 @@ BaselineOfSnapDump >> neoJson: spec [
 BaselineOfSnapDump >> openApi: spec [
 	spec baseline: 'OpenAPI' with: [ 
 			spec 
-				repository: 'github://zweidenker/OpenAPI:89789192f4e0755c30c248b787fbcb6b86900b09/source';
+				repository: 'github://ApptiveGrid/OpenAPI:89789192f4e0755c30c248b787fbcb6b86900b09/source';
 				loads: #('REST') ]
 ]
 
