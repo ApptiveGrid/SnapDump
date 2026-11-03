@@ -54,7 +54,8 @@ SDMemorySnapshot >> initialize [
 	operatingSystemVersion :=  Smalltalk os version asString.
 	vmVersion := Smalltalk vm version asString.
 	imageVersion := SystemVersion current version asString.
-	imageBuild := Smalltalk lastUpdateString asString
+	"what SmalltalkImage>>#lastUpdateString answered, which Pharo 14 dropped"
+	imageBuild := 'Build information: ', SystemVersion current asString
 ]
 
 { #category : 'as yet unclassified' }
