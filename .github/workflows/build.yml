@@ -4,7 +4,7 @@ env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 # Controls when the action will run. Triggers the workflow on push or pull request
-# events but only for the development branch
+# events but only for the master branch
 on:
   pull_request:
     types: [assigned, opened, synchronize, reopened]
@@ -18,10 +18,10 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        smalltalk: [ Pharo64-14, Pharo64-13, Pharo64-12 ],
+        smalltalk: [ Pharo64-14, Pharo64-13, Pharo64-12 ]
     name: ${{ matrix.smalltalk }}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - uses: hpi-swa/setup-smalltalkCI@v1
         id: smalltalkci
         with:
