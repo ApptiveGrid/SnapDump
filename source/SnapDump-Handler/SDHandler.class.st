@@ -4,7 +4,8 @@ Class {
 	#instVars : [
 		'project',
 		'version',
-		'emergencyHandler'
+		'emergencyHandler',
+		'propertiesProvider'
 	],
 	#category : #'SnapDump-Handler'
 }
@@ -70,7 +71,7 @@ SDHandler >> handleException: exception [
 		^ nil ].
 	^ [ 
 		Transcript show: 'SnapDump: exception to report: ', exception description asString; cr.
-		self handleSnapshot: exception asSnapshot ]
+		self handleSnapshot: (self snapshotFor: exception) ]
 		on: Error 
 		do: [ :emergency | 
 			"if an error occurrs while reporting an error we call the 
@@ -111,6 +112,31 @@ SDHandler >> project: anObject [
 SDHandler >> projectName: projectName versionString: versionString [
 	self project: projectName.
 	self version: versionString
+]
+
+{ #category : #accessing }
+SDHandler >> propertiesProvider [
+	^ propertiesProvider ifNil: [
+		propertiesProvider := [ :exception | Dictionary new ] ]
+]
+
+{ #category : #accessing }
+SDHandler >> propertiesProvider: aBlock [
+	"aBlock takes the exception and answers a dictionary of properties for its
+	snapshot. It runs in the process that signaled, so process local state like
+	the current database is still there"
+	propertiesProvider := aBlock
+]
+
+{ #category : #services }
+SDHandler >> snapshotFor: exception [
+	| snapshot |
+	snapshot := exception asSnapshot.
+	"a failing provider must not cost the report itself"
+	[ snapshot properties addAll: (self propertiesProvider value: exception) ]
+		on: Error
+		do: [ :error | snapshot propertyAt: 'propertiesError' put: error description ].
+	^ snapshot
 ]
 
 { #category : #accessing }
