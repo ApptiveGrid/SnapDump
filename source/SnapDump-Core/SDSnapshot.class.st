@@ -17,7 +17,8 @@ Class {
 		'versionString',
 		'projectName',
 		'exception',
-		'stackTrace'
+		'stackTrace',
+		'properties'
 	],
 	#category : 'SnapDump-Core-Model',
 	#package : 'SnapDump-Core',
@@ -75,7 +76,7 @@ SDSnapshot class >> neoJsonMapping: mapper [
 	mapper for: self do: [ :mapping |
 		mapping mapAccessors: #( projectName versionString ).
 		(mapping mapInstVar: #timestamp) valueSchema: DateAndTime.
-		mapping mapInstVars: #(exceptionId snapshotId className selector exceptionClass operatingSystem systemArchitecture operatingSystemVersion vmVersion imageVersion imageBuild) ].
+		mapping mapInstVars: #(exceptionId snapshotId className selector exceptionClass operatingSystem systemArchitecture operatingSystemVersion vmVersion imageVersion imageBuild properties) ].
 	mapper for: DateAndTime customDo: [ :mapping |
 		mapping decoder: [ :string | DateAndTime fromString: string ].
 		mapping encoder: [ :dateAndTime | dateAndTime printString ] ].
@@ -89,7 +90,7 @@ SDSnapshot >> asSnapshot [
 
 { #category : 'private' }
 SDSnapshot >> basicMetaFields [
-	^ #(projectName versionString  exceptionId timestamp className selector exceptionClass operatingSystem systemArchitecture operatingSystemVersion vmVersion imageVersion imageBuild)
+	^ #(projectName versionString  exceptionId timestamp className selector exceptionClass operatingSystem systemArchitecture operatingSystemVersion vmVersion imageVersion imageBuild properties)
 ]
 
 { #category : 'private' }
@@ -278,8 +279,26 @@ SDSnapshot >> projectName [
 
 { #category : 'accessing' }
 SDSnapshot >> projectName: aString [
-	
+
 	projectName := aString
+]
+
+{ #category : 'accessing' }
+SDSnapshot >> properties [
+	"free key/value pairs the reporting application adds, e.g. the database an
+	error happened in. Written into the meta data, so the server lists them"
+	^ properties ifNil: [
+		properties := Dictionary new ]
+]
+
+{ #category : 'accessing' }
+SDSnapshot >> properties: aDictionary [
+	properties := aDictionary
+]
+
+{ #category : 'accessing' }
+SDSnapshot >> propertyAt: aString put: anObject [
+	^ self properties at: aString put: anObject
 ]
 
 { #category : 'actions' }

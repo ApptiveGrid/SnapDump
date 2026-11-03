@@ -134,6 +134,35 @@ SDCoreTests >> testReadSnapshotMeta [
 ]
 
 { #category : #tests }
+SDCoreTests >> testReadSnapshotProperties [
+
+	| snapshot |
+	handler propertiesProvider: [ :exception |
+		Dictionary new
+			at: 'databaseId' put: 'abc123';
+			yourself ].
+	snapshot := self roundtripSnapshot.
+	self assert: (snapshot properties at: 'databaseId') equals: 'abc123'
+]
+
+{ #category : #tests }
+SDCoreTests >> testReadSnapshotPropertiesEmpty [
+
+	| snapshot |
+	snapshot := self roundtripSnapshot.
+	self assert: snapshot properties isEmpty
+]
+
+{ #category : #tests }
+SDCoreTests >> testReadSnapshotPropertiesProviderFails [
+
+	| snapshot |
+	handler propertiesProvider: [ :exception | Error signal: 'provider failed' ].
+	snapshot := self roundtripSnapshot.
+	self assert: ((snapshot properties at: 'propertiesError') includesSubstring: 'provider failed')
+]
+
+{ #category : #tests }
 SDCoreTests >> testReadSnapshotStackTrace [
 
 	|  snapshot string stack |
