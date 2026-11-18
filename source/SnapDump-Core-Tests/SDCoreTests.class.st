@@ -121,6 +121,30 @@ SDCoreTests >> testReadSnapshotMeta [
 ]
 
 { #category : #tests }
+SDCoreTests >> testReadSnapshotProperties [
+	"the server of a snapshot that carries properties lists them in its meta data"
+
+	| snapshot json |
+	snapshot := self roundtripSnapshot.
+	snapshot propertyAt: 'databaseId' put: 'abc123'.
+	json := NeoJSONWriter toString: snapshot.
+	self
+		assert: ((NeoJSONReader fromString: json as: SDSnapshot) properties at: 'databaseId')
+		equals: 'abc123'
+]
+
+{ #category : #tests }
+SDCoreTests >> testReadSnapshotPropertiesEmpty [
+	"no properties are an empty dictionary in the meta data, not null"
+
+	| snapshot json |
+	snapshot := self roundtripSnapshot.
+	self assert: snapshot properties isEmpty.
+	json := NeoJSONWriter toString: snapshot.
+	self assert: ((NeoJSONReader fromString: json) at: 'properties') equals: Dictionary new
+]
+
+{ #category : #tests }
 SDCoreTests >> testReadSnapshotStackTrace [
 
 	|  snapshot string stack |

@@ -17,7 +17,8 @@ Class {
 		'versionString',
 		'projectName',
 		'exception',
-		'stackTrace'
+		'stackTrace',
+		'properties'
 	],
 	#category : #'SnapDump-Core-Model'
 }
@@ -71,7 +72,9 @@ SDSnapshot class >> exception: anException [
 { #category : #accessing }
 SDSnapshot class >> neoJsonMapping: mapper [
 	mapper for: self do: [ :mapping |
-		mapping mapAccessors: #( projectName versionString ).
+		"properties through its accessor: a snapshot file written before properties existed
+		answers an empty dictionary and not null"
+		mapping mapAccessors: #( projectName versionString properties ).
 		(mapping mapInstVar: #timestamp) valueSchema: DateAndTime.
 		mapping mapInstVars: #(exceptionId snapshotId className selector exceptionClass operatingSystem systemArchitecture operatingSystemVersion vmVersion imageVersion imageBuild) ].
 	mapper for: DateAndTime customDo: [ :mapping |
@@ -87,7 +90,7 @@ SDSnapshot >> asSnapshot [
 
 { #category : #private }
 SDSnapshot >> basicMetaFields [
-	^ #(projectName versionString  exceptionId timestamp className selector exceptionClass operatingSystem systemArchitecture operatingSystemVersion vmVersion imageVersion imageBuild)
+	^ #(projectName versionString  exceptionId timestamp className selector exceptionClass operatingSystem systemArchitecture operatingSystemVersion vmVersion imageVersion imageBuild properties)
 ]
 
 { #category : #private }
@@ -264,6 +267,24 @@ SDSnapshot >> projectName [
 SDSnapshot >> projectName: aString [
 	
 	projectName := aString
+]
+
+{ #category : #accessing }
+SDSnapshot >> properties [
+	"free key/value pairs the reporting application adds, e.g. the database an
+	error happened in. Written into the meta data, so the server lists them"
+	^ properties ifNil: [
+		properties := Dictionary new ]
+]
+
+{ #category : #accessing }
+SDSnapshot >> properties: aDictionary [
+	properties := aDictionary
+]
+
+{ #category : #accessing }
+SDSnapshot >> propertyAt: aString put: anObject [
+	^ self properties at: aString put: anObject
 ]
 
 { #category : #actions }
