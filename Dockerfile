@@ -16,10 +16,12 @@ COPY start.st /opt/
 COPY source /opt/source
 
 ARG CACHEBUST=1
+# shown by GET /api/v2/version; docker build --build-arg VERSION=... (make docker)
+ARG VERSION=unknown
 RUN \
     /opt/pharo /opt/SnapDump.image eval --save "Metacello new repository: 'filetree:///opt/source'; baseline: #SnapDump; load: #('server')" && \
     /opt/pharo /opt/SnapDump.image eval --save "SnapDump prepareForDeployment" && \
-    /opt/pharo /opt/SnapDump.image eval --save "SDServer version: '$DOCKER_TAG'" && \
+    /opt/pharo /opt/SnapDump.image eval --save "SDServer version: '$VERSION'" && \
     rm -rf /opt/pharo-local
 
 RUN \
