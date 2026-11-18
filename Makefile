@@ -1,16 +1,21 @@
-docker: SnapDump.image
-	docker build -t zweidenker/snap-dump:latest .
+# make push REGISTRY=registry.example.org[:port] VERSION=0.9.2
+# pushes <registry>/snap-dump:<version>; the registry is the caller's, there is no default.
+REGISTRY ?=
+VERSION ?= 0.10.0
+# the server runs on x86_64; on an arm64 host (a Mac) docker emulates it
+PLATFORM ?= linux/amd64
+IMAGE = $(REGISTRY)/snap-dump
 
-SnapDump.image: Pharo.image
-	./pharo Pharo.image save SnapDump
-	./pharo Pharo.image eval --save "Metacello new repository: 'github://zweidenker/SnapDump/source'; baseline: #SnapDump; load"
+# The Dockerfile copies source/ and loads it itself, so nothing is built locally first.
+docker:
+	@test -n "$(REGISTRY)" || { echo "REGISTRY is not set, e.g. make docker REGISTRY=registry.example.org"; exit 1; }
+	docker build --platform $(PLATFORM) --build-arg VERSION=$(VERSION) -t $(IMAGE):$(VERSION) .
 
-Pharo.image:
-	curl get.pharo.org/64/70+vm | bash
+push: docker
+	docker push $(IMAGE):$(VERSION)
 
 clean:
 	rm -f SnapDump.image SnapDump.changes
-	#rm -f pharo pharo-ui SnapDump.image SnapDump.changes
-	#rm -rf pharo-vm
 all: docker
 
+.PHONY: docker push clean all
