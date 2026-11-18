@@ -1,7 +1,7 @@
 # make push REGISTRY=registry.example.org[:port] VERSION=0.9.2
 # pushes <registry>/snap-dump:<version>; the registry is the caller's, there is no default.
 REGISTRY ?=
-VERSION ?= 0.9.2
+VERSION ?= 0.10.0
 # the server runs on x86_64; on an arm64 host (a Mac) docker emulates it
 PLATFORM ?= linux/amd64
 IMAGE = $(REGISTRY)/snap-dump
