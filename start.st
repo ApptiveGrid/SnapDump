@@ -1,5 +1,4 @@
 | apiHandler healthHandler metricsHandler prefixHandler server |
-Author fullName: 'docker'.
 
 ZnLogEvent logToTranscript.
 
