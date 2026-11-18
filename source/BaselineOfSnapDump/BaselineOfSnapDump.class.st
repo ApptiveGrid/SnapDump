@@ -50,7 +50,7 @@ BaselineOfSnapDump >> mocketry: spec [
 BaselineOfSnapDump >> neoJson: spec [
 	spec
 		baseline: 'NeoJSON' 
-		with: [ spec repository: 'github://svenvc/NeoJSON:master/repository' ]
+		with: [ spec repository: 'github://svenvc/NeoJSON:c368bbf475f60d564cd3fb708e99b92efea8ffd3/repository' ]
 ]
 
 { #category : #baselines }
@@ -66,5 +66,5 @@ BaselineOfSnapDump >> zinc: spec [
 	spec baseline: 'ZincHTTPComponents' with: [ 
 		spec 
 			loads: #('REST');
-			repository: 'github://svenvc/zinc/repository']
+			repository: 'github://svenvc/zinc:f11f1a92252a9789599a73df97f7ca60cd979a65/repository']
 ]
