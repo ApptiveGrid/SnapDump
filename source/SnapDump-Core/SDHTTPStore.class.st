@@ -26,9 +26,15 @@ SDHTTPStore >> applyConfiguration: aConfig [
 
 { #category : 'accessing' }
 SDHTTPStore >> client [
-	^ ZnClient new
+	| client |
+	client := ZnClient new
 		beOneShot;
-		setBasicAuthenticationUsername: username password: password 
+		yourself.
+	"Only send Basic credentials when a username is configured. An empty
+	Authorization header is rejected by the server with 401."
+	username isEmptyOrNil ifFalse: [
+		client setBasicAuthenticationUsername: username password: (password ifNil: [ '' ]) ].
+	^ client
 ]
 
 { #category : 'services - getting' }
