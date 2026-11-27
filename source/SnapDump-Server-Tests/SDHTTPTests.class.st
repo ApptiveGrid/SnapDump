@@ -66,6 +66,13 @@ SDHTTPTests >> tearDown [
 ]
 
 { #category : #tests }
+SDHTTPTests >> testBasicAuthenticationSentWithUsername [
+	| client |
+	client := (self store username: 'user' password: 'secret') client.
+	self assert: (client request headers includesKey: 'Authorization')
+]
+
+{ #category : #tests }
 SDHTTPTests >> testInternalServerError [
 	| response snapshot |
 	server znServer debugMode: false.
@@ -82,6 +89,15 @@ SDHTTPTests >> testInternalServerError [
 	self assert: rootPath hasDirectories.
 	snapshot := (SDSnapshotFileReader file: rootPath allFiles anyOne) snapshot.
 	self assert: snapshot className equals: 'SDSnapshotFileReader'
+]
+
+{ #category : #tests }
+SDHTTPTests >> testNoBasicAuthenticationWithoutUsername [
+	| client |
+	client := self store client.
+	self deny: (client request headers includesKey: 'Authorization').
+	client := (self store username: '' password: '') client.
+	self deny: (client request headers includesKey: 'Authorization')
 ]
 
 { #category : #tests }
